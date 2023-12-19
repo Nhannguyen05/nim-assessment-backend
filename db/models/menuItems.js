@@ -51,4 +51,34 @@ const create = async (body) => {
   }
 };
 
-module.exports = { getAll, getOne, create, MenuItems };
+const update = async (id, updatedFields) => {
+  try {
+    const updateField = { ...updatedFields, updatedAt: new Date() };
+    const updateMenuItem = await MenuItems.findByIdAndUpdate(
+      id,
+      { $set: updateField },
+      { new: true }
+    );
+    return updateMenuItem;
+  } catch (error) {
+    return error;
+  }
+};
+
+const deleteById = async (id) => {
+  const deletedItem = await MenuItems.findByIdAndDelete(id);
+  return deletedItem.id;
+};
+
+const search = async (query) => {
+  try {
+    const menuFinded = await MenuItems.find({
+      description: new RegExp(query.q, "i")
+    });
+    return menuFinded;
+  } catch (error) {
+    return error;
+  }
+};
+
+module.exports = { getAll, getOne, create, MenuItems, update, deleteById, search };
