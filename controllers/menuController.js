@@ -47,12 +47,11 @@ const deleteById = async (req, res) => {
 
 const search = async (req, res) => {
   try {
-    const menu = await MenuItems.search(req.query);
-    return menu;
+    const matchingItems = await MenuItems.search(req.query.q.toLowerCase());
+    res.send(matchingItems);
   } catch (error) {
     res.status(500).send(error);
   }
 };
-
 
 module.exports = { getAll, getOne, create, update, deleteById, search };

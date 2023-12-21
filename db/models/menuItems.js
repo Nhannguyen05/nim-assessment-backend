@@ -1,23 +1,28 @@
 const mongoose = require("../db.js");
 
-const menuItemsSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    unique: true
+const menuItemsSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    price: {
+      type: Number,
+      required: true
+    },
+    description: {
+      type: String,
+      required: true
+    },
+    imageUrl: {
+      type: String
+    }
   },
-  price: {
-    type: Number,
-    required: true
-  },
-  description: {
-    type: String,
-    required: true
-  },
-  imageUrl: {
-    type: String
+  {
+    timestamps: true
   }
-});
+);
 menuItemsSchema.set("toJSON", {
   virtuals: true
 });
@@ -72,13 +77,25 @@ const deleteById = async (id) => {
 
 const search = async (query) => {
   try {
-    const menuFinded = await MenuItems.find({
-      description: new RegExp(query.q, "i")
+    const matchingItems = await MenuItems.find({
+      $or: [
+        { name: { $regex: new RegExp(query, 'i') } }, // Case-insensitive match for name
+        { description: { $regex: new RegExp(query, 'i') } } // Case-insensitive match for description
+      ]
     });
-    return menuFinded;
+
+    return matchingItems;
   } catch (error) {
     return error;
   }
 };
 
-module.exports = { getAll, getOne, create, MenuItems, update, deleteById, search };
+module.exports = {
+  getAll,
+  getOne,
+  create,
+  MenuItems,
+  update,
+  deleteById,
+  search
+};
