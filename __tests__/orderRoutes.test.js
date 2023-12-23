@@ -31,7 +31,10 @@ describe("routes", () => {
           item: testMenuItemId,
           quantity: 1
         }
-      ]
+      ],
+      createdAt: new Date("2022-06-02T18:25:43.511Z"),
+      updatedAt: new Date("2022-06-03T19:31:43.511Z"),
+      status: "delivered"
     };
   });
   // teardown
@@ -99,10 +102,10 @@ describe("routes", () => {
     it("should return an array of orders with the correct status", async () => {
       await Order.create(testOrder);
       const response = await request(server).get(
-        "/api/orders/status?s=pending"
+        "/api/orders/status?s=delivered"
       );
       expect(response.body).toBeInstanceOf(Array);
-      expect(response.body[0].status).toBe("pending");
+      expect(response.body[0].status).toBe("delivered");
     });
   });
 

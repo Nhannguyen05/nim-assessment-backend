@@ -47,7 +47,7 @@ const deleteById = async (req, res) => {
 
 const search = async (req, res) => {
   try {
-    const matchingItems = await MenuItems.search(req.query.q.toLowerCase());
+    const matchingItems = await MenuItems.search(req.query.q);
     res.send(matchingItems);
   } catch (error) {
     res.status(500).send(error);

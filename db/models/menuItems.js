@@ -79,8 +79,8 @@ const search = async (query) => {
   try {
     const matchingItems = await MenuItems.find({
       $or: [
-        { name: { $regex: new RegExp(query, 'i') } }, // Case-insensitive match for name
-        { description: { $regex: new RegExp(query, 'i') } } // Case-insensitive match for description
+        { name: { $regex: new RegExp(query, "i") } }, // Case-insensitive match for name
+        { description: { $regex: new RegExp(query, "i") } } // Case-insensitive match for description
       ]
     });
 
