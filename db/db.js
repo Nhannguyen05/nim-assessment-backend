@@ -3,10 +3,14 @@ const getLogger = require("../logger");
 
 const logger = getLogger("db");
 
-const { MONGO_URI, DB_NAME } = process.env;
-const connectionString = MONGO_URI || "mongodb://localhost:27017/restaurant";
+const { MONGO_URI, DB_NAME, DB_PASSWORD } = process.env;
+const connectionString = MONGO_URI;
+const password = DB_PASSWORD;
+
 mongoose
-  .connect(`${connectionString}/${DB_NAME}?retryWrites=true&w=majority`)
+  .connect(
+    `mongodb+srv://${DB_NAME}:${password}@${connectionString}/?retryWrites=true&w=majority`
+  )
   .then(() => {
     logger.log("Connected to MongoDB");
   })
