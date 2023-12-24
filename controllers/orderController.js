@@ -59,9 +59,32 @@ const getByCustomer = async (req, res) => {
 };
 
 const getByStatus = async (req, res) => {
+  const { s, startDate, endDate } = req.query;
   try {
-    const orders = await Order.getByStatus(req.params.status);
-    res.send(orders);
+    if (!startDate || !endDate) {
+      const currentDate = new Date().toDateString();
+      const orders = await Order.getByStatus(s, "01/01/0000", currentDate);
+      res.send(orders);
+    } else {
+      const orders = await Order.getByStatus(s, startDate, endDate);
+      res.send(orders);
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+const getTotalSales = async (req, res) => {
+  const { startDate, endDate } = req.query;
+  try {
+    if (!startDate || !endDate) {
+      const currentDate = new Date().toDateString();
+      const total = await Order.getTotalSales("01/01/0000", currentDate);
+      res.send({ total });
+    } else {
+      const total = await Order.getTotalSales(startDate, endDate);
+      res.send({ total });
+    }
   } catch (error) {
     res.status(500).send(error);
   }
@@ -74,5 +97,6 @@ module.exports = {
   update,
   remove,
   getByCustomer,
-  getByStatus
+  getByStatus,
+  getTotalSales
 };
