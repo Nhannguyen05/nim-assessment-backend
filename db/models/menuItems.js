@@ -1,23 +1,28 @@
 const mongoose = require("../db.js");
 
-const menuItemsSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    unique: true
+const menuItemsSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    price: {
+      type: Number,
+      required: true
+    },
+    description: {
+      type: String,
+      required: true
+    },
+    imageUrl: {
+      type: String
+    }
   },
-  price: {
-    type: Number,
-    required: true
-  },
-  description: {
-    type: String,
-    required: true
-  },
-  imageUrl: {
-    type: String
+  {
+    timestamps: true
   }
-});
+);
 menuItemsSchema.set("toJSON", {
   virtuals: true
 });
@@ -51,4 +56,46 @@ const create = async (body) => {
   }
 };
 
-module.exports = { getAll, getOne, create, MenuItems };
+const update = async (id, updatedFields) => {
+  try {
+    const updateField = { ...updatedFields, updatedAt: new Date() };
+    const updateMenuItem = await MenuItems.findByIdAndUpdate(
+      id,
+      { $set: updateField },
+      { new: true }
+    );
+    return updateMenuItem;
+  } catch (error) {
+    return error;
+  }
+};
+
+const deleteById = async (id) => {
+  const deletedItem = await MenuItems.findByIdAndDelete(id);
+  return deletedItem.id;
+};
+
+const search = async (query) => {
+  try {
+    const matchingItems = await MenuItems.find({
+      $or: [
+        { name: { $regex: new RegExp(query, "i") } }, // Case-insensitive match for name
+        { description: { $regex: new RegExp(query, "i") } } // Case-insensitive match for description
+      ]
+    });
+
+    return matchingItems;
+  } catch (error) {
+    return error;
+  }
+};
+
+module.exports = {
+  getAll,
+  getOne,
+  create,
+  MenuItems,
+  update,
+  deleteById,
+  search
+};
